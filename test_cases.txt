@@ -1,0 +1,15 @@
+python test.py get json http://192.168.1.116/api/v001/dao/?key=config_version
+python test.py get json http://192.168.1.116/api/v001/dao/?key=netifc_count
+python test.py get json http://192.168.1.116/api/v001/dao/?key=netifc_1
+python test.py get json http://192.168.1.116/api/v001/dao/?key=netifc_2
+python test.py get json http://192.168.1.116/api/v001/dao/?key=netifc_3
+python test.py get json http://192.168.1.116/api/v001/dao/?key=netifc_4
+python test.py get json http://192.168.1.116/api/v001/dao/?key=storage_count
+python test.py get json http://192.168.1.116/api/v001/dao/?key=storage_1
+python test.py get json http://192.168.1.116/api/v001/dao/?key=sda_part_1
+python test.py get json http://192.168.1.116/api/v001/dao/?key=sda_part_2
+python test.py get json http://192.168.1.116/api/v001/dao/?key=sda_part_3
+python test.py get json http://192.168.1.116/api/v001/dao/?key=sda_part_4
+python test.py get json http://192.168.1.116/api/v001/dao/?key=hostname_cfg
+python test.py get json http://192.168.1.116/api/v001/dao/?key=drbd_cfg 
+
