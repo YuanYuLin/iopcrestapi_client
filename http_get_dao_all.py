@@ -29,6 +29,11 @@ def request_list(hostname, out_format):
     response_output(out_format, http_request(hostname, 'sda_part_2'))
     response_output(out_format, http_request(hostname, 'sda_part_3'))
     response_output(out_format, http_request(hostname, 'sda_part_4'))
+    response_output(out_format, http_request(hostname, 'lxc_count'))
+    response_output(out_format, http_request(hostname, 'lxc_1'))
+    response_output(out_format, http_request(hostname, 'lxc_2'))
+    response_output(out_format, http_request(hostname, 'lxc_3'))
+    response_output(out_format, http_request(hostname, 'lxc_4'))
     response_output(out_format, http_request(hostname, 'hostname_cfg'))
     response_output(out_format, http_request(hostname, 'drbd_cfg'))
 
