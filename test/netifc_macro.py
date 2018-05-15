@@ -19,13 +19,13 @@ def add_br1(url_prefix):
 
 def add_br0_eth0(url_prefix):
     url=url_prefix + '/v1/raw/2/1'
-    payload='{"ops":"add_ifc", "bridge":"br0", "ifc":"eth0"}'
+    payload='{"ops":"add_netifc", "bridge":"br0", "ifc":"eth0"}'
     rsp=requests.post(url, data=payload)
     return rsp
 
 def add_br1_eth0_100(url_prefix):
     url=url_prefix + '/v1/raw/2/1'
-    payload='{"ops":"add_ifc", "bridge":"br1", "ifc":"eth0.100"}'
+    payload='{"ops":"add_netifc", "bridge":"br1", "ifc":"eth0.100"}'
     rsp=requests.post(url, data=payload)
     return rsp
 

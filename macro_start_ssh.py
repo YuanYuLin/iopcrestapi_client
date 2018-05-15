@@ -33,6 +33,8 @@ def get_status_until_key_generated(hostname):
     ssh_status_id = 2
     while True :
         rsp = get_status(hostname, ssh_status_id)
+        print rsp
+        print rsp.json()
         if int(rsp.status_code) == 200 :
             obj = rsp.json()
             if (obj['status'] | 0x01) == 0x01:

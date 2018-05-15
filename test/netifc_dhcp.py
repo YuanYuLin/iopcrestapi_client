@@ -7,7 +7,7 @@ import json
 
 def http_request(url_prefix):
     url=url_prefix + '/v1/raw/2/1'
-    payload='{"ops":"up_ifc", "ifc":"br0", "ip_src":"dhcp"}'
+    payload='{"ops":"up_netifc", "ifc":"br0", "ip_src":"dhcp"}'
     print url
     #http://192.168.1.115/api/v1/raw/2/1
     rsp=requests.post(url, data=payload)
