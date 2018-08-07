@@ -48,21 +48,31 @@ def start_ssh(hostname):
     payload += '}'
     return http_request(hostname, payload)
 
-def request_list(hostname, out_format):
-    response_output(out_format, gen_ssh_key(hostname))
-    response_output(out_format, get_status_until_key_generated(hostname))
-    response_output(out_format, start_ssh(hostname))
+def stop_ssh(hostname):
+    payload = '{'
+    payload += '"ops":"stop_ssh"'
+    payload += '}'
+    return http_request(hostname, payload)
+
+def request_list(hostname, out_format, action):
+    if action == 'start':
+        response_output(out_format, gen_ssh_key(hostname))
+        response_output(out_format, get_status_until_key_generated(hostname))
+        response_output(out_format, start_ssh(hostname))
+    if action == 'stop':
+        response_output(out_format, stop_ssh(hostname))
 
 def help_usage():
-    print "rest_cli.py <hostname>"
+    print "rest_cli.py <hostname> <action>"
     sys.exit(1)
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         help_usage()
 
     hostname=sys.argv[1]
+    action=sys.argv[2]
 
-    request_list(hostname, 'json')
+    request_list(hostname, 'json', action)
 

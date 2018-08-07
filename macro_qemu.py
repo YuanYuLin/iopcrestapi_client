@@ -25,53 +25,53 @@ def response_output(out_format, rsp):
     print rsp.status_code
     pprint.pprint(rsp.json())
 
-def post_lxc_cfg(hostname, idx, enable):
-    key = 'lxc_%d' % idx
+def post_qemu_cfg(hostname, idx, enable):
+    key="qemu_%d" % idx
     json = '{'
     json += '"enable":%d, ' % enable
-    json += '"name":"vm%03d", ' % idx
-    json += '"rootfs":"/hdd/sdb/vm%03d", ' % idx
-    json += '"fstab":"/hdd/sdb/vm%03d.fstab", ' % idx
-    json += '"nettype":"veth", '
-    json += '"nethwlink":"br0", '
-    json += '"nethwaddr":"00:19:82:03:21:%02d", ' % idx
-    json += '"ipaddress":"192.168.155.%d", ' % idx
-    json += '"gateway":"192.168.155.254"'
+    json += '"name":"qemu%03d", ' % idx
+    json += '"rootfs":"/hdd/sdb/qemu%03d.sys.qcow2", ' % idx
+    json += '"nethwaddr":"01:19:82:03:21:%02d", ' % idx
+    json += '"memory":1024'
     json += '}'
-    return http_request_by_key(hostname, key, json)
+    return http_request_by_key(hostname, 'key', json)
 
-def gen_lxc_cfg(hostname, idx):
+def gen_lxc_cfg(hostname):
     payload = '{'
     payload += '"ops":"gen_lxc_cfg",'
-    payload += '"index":%d' % idx
+    payload += '"index":1'
     payload += '}'
     return http_request(hostname, payload)
 
-def start_lxc(hostname, idx):
+def start_qemu(hostname, idx):
     payload = '{'
-    payload += '"ops":"start_lxc",'
+    payload += '"ops":"start_qemu",'
     payload += '"index":%d' % idx
     payload += '}'
     return http_request(hostname, payload)
 
-def request_list(hostname, out_format):
+def request_list(hostname, out_format, action):
     idx = 1
     enable = 1
-    response_output(out_format, post_lxc_cfg(hostname, idx, enable))
-    response_output(out_format, gen_lxc_cfg(hostname, idx))
-    time.sleep(1)
-    response_output(out_format, start_lxc(hostname, idx))
+    if action == "start" :
+        response_output(out_format, post_qemu_cfg(hostname, idx, enable))
+        #response_output(out_format, gen_lxc_cfg(hostname))
+        time.sleep(1)
+        response_output(out_format, start_qemu(hostname, idx))
+    if action == "stop" :
+        print "Not supported, now..."
 
 def help_usage():
-    print "rest_cli.py <hostname>"
+    print "rest_cli.py <hostname> <action>"
     sys.exit(1)
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         help_usage()
 
     hostname=sys.argv[1]
+    action=sys.argv[2]
 
-    request_list(hostname, 'json')
+    request_list(hostname, 'json', action)
 

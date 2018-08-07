@@ -54,16 +54,20 @@ def start_lxc(hostname, idx):
     payload += '}'
     return http_request(hostname, payload)
 
-def request_list(hostname, out_format):
+def request_list(hostname, out_format, action):
     idx = 1
     enable = 1
-    response_output(out_format, post_lxc_cfg(hostname, idx, enable))
-    response_output(out_format, gen_lxc_cfg(hostname, idx))
-    time.sleep(1)
-    response_output(out_format, start_lxc(hostname, idx))
+    if action == "start":
+        response_output(out_format, post_lxc_cfg(hostname, idx, enable))
+        response_output(out_format, gen_lxc_cfg(hostname, idx))
+        time.sleep(1)
+        response_output(out_format, start_lxc(hostname, idx))
+
+    if action == "stop":
+        print "Not Supported, Now..."
 
 def help_usage():
-    print "rest_cli.py <hostname>"
+    print "rest_cli.py <hostname> <action>"
     sys.exit(1)
 
 if __name__ == '__main__':
@@ -72,6 +76,7 @@ if __name__ == '__main__':
         help_usage()
 
     hostname=sys.argv[1]
+    action=sys.argv[2]
 
-    request_list(hostname, 'json')
+    request_list(hostname, 'json', action)
 
