@@ -6,6 +6,13 @@ import sys
 import json
 import time
 
+def http_request_rfb(hostname, payload):
+    url='http://' + hostname + '/api/v1/rfb'
+    print url
+    headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
+    rsp=requests.post(url, headers=headers, data=payload)
+    return rsp
+
 def http_request(hostname, payload):
     url='http://' + hostname + '/api/v1/ops'
     print url
@@ -30,18 +37,11 @@ def post_qemu_cfg(hostname, idx, enable):
     json = '{'
     json += '"enable":%d, ' % enable
     json += '"name":"qemu%03d", ' % idx
-    json += '"rootfs":"/hdd/sdb/qemu%03d.sys.qcow2", ' % idx
-    json += '"nethwaddr":"01:19:82:03:21:%02d", ' % idx
-    json += '"memory":1024'
+    json += '"rootfs":"/hdd/sdd/qemu%03d.sys.qcow2", ' % idx
+    json += '"nethwaddr":"00:19:82:03:22:%02d", ' % idx
+    json += '"memory":512'
     json += '}'
-    return http_request_by_key(hostname, 'key', json)
-
-def gen_lxc_cfg(hostname):
-    payload = '{'
-    payload += '"ops":"gen_lxc_cfg",'
-    payload += '"index":1'
-    payload += '}'
-    return http_request(hostname, payload)
+    return http_request_by_key(hostname, key, json)
 
 def start_qemu(hostname, idx):
     payload = '{'
@@ -50,19 +50,42 @@ def start_qemu(hostname, idx):
     payload += '}'
     return http_request(hostname, payload)
 
+def stop_qemu(hostname, idx):
+    payload = '{'
+    payload += '"ops":"qmp"'
+    payload += ', '
+    payload += '"index":%d' % idx
+    payload += ', '
+    payload += '"action":128'
+    payload += '}'
+    return http_request_rfb(hostname, payload)
+
+def query_version(hostname, idx):
+    payload = '{'
+    payload += '"ops":"qmp"'
+    payload += ', '
+    payload += '"index":%d' % idx
+    payload += ', '
+    payload += '"action":0'
+    payload += '}'
+    return http_request_rfb(hostname, payload)
+
 def request_list(hostname, out_format, action):
     idx = 1
     enable = 1
+    response_output(out_format, post_qemu_cfg(hostname, idx, enable))
     if action == "start" :
-        response_output(out_format, post_qemu_cfg(hostname, idx, enable))
-        #response_output(out_format, gen_lxc_cfg(hostname))
         time.sleep(1)
         response_output(out_format, start_qemu(hostname, idx))
     if action == "stop" :
-        print "Not supported, now..."
+        response_output(out_format, stop_qemu(hostname, idx))
+    if action == "query-version" :
+        print "AAA"
+        response_output(out_format, query_version(hostname, idx - 1))
 
 def help_usage():
     print "rest_cli.py <hostname> <action>"
+    print "  action: start, stop, query-version"
     sys.exit(1)
 
 if __name__ == '__main__':

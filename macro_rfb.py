@@ -32,14 +32,16 @@ def response_output(out_format, rsp):
 
 def start_rfb(hostname, index):
     payload = '{'
+    payload += '"ops":"rfb"'
     payload += '"index":%d' % index
     payload += ', '
     payload += '"action":1'
     payload += '}'
     return http_request_rfb(hostname, payload)
 
-def  stop_rfb(hostname, index):
+def stop_rfb(hostname, index):
     payload = '{'
+    payload += '"ops":"rfb"'
     payload += '"index":%d' % index
     payload += ', '
     payload += '"action":2'
