@@ -5,31 +5,32 @@ import pprint
 import sys
 import json
 import time
+import libiopc_rest as rst
 
 def http_request_rfb(hostname, payload):
     url='http://' + hostname + '/api/v1/rfb'
-    print url
+    rst.debug(url)
     headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
     rsp=requests.post(url, headers=headers, data=payload)
     return rsp
 
 def http_request(hostname, payload):
     url='http://' + hostname + '/api/v1/ops'
-    print url
+    rst.debug(url)
     headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
     rsp=requests.post(url, headers=headers, data=payload)
     return rsp
 
 def http_request_by_key(hostname, key, payload):
     url='http://' + hostname + '/api/v1/dao/?key=' + key
-    print url
+    rst.debug(url)
     headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
     rsp=requests.post(url, headers=headers, data=payload)
     return rsp
 
 def response_output(out_format, rsp):
-    print "response status code"
-    print rsp.status_code
+    rst.debug("response status code")
+    rst.debug(rsp.status_code)
     pprint.pprint(rsp.json())
 
 def post_qemu_cfg(hostname, idx, enable):
@@ -37,9 +38,9 @@ def post_qemu_cfg(hostname, idx, enable):
     json = '{'
     json += '"enable":%d, ' % enable
     json += '"name":"qemu%03d", ' % idx
-    json += '"rootfs":"/hdd/sdd/qemu%03d.sys.qcow2", ' % idx
-    json += '"nethwaddr":"00:19:82:03:22:%02d", ' % idx
-    json += '"memory":512'
+    json += '"rootfs":"/hdd/sdb/SystemDebian9.qcow2", '
+    json += '"nethwaddr":"00:20:18:08:19:%02d", ' % idx
+    json += '"memory":4096'
     json += '}'
     return http_request_by_key(hostname, key, json)
 
@@ -80,12 +81,11 @@ def request_list(hostname, out_format, action):
     if action == "stop" :
         response_output(out_format, stop_qemu(hostname, idx))
     if action == "query-version" :
-        print "AAA"
         response_output(out_format, query_version(hostname, idx - 1))
 
 def help_usage():
-    print "rest_cli.py <hostname> <action>"
-    print "  action: start, stop, query-version"
+    rst.out("rest_cli.py <hostname> <action>")
+    rst.out("  action: start, stop, query-version")
     sys.exit(1)
 
 if __name__ == '__main__':
