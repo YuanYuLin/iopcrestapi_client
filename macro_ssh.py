@@ -1,66 +1,45 @@
 #!/usr/bin/python2.7
 
-import requests
-import pprint
 import sys
-import json
 import time
+import libiopc_rest as rst
 
-def http_request(hostname, payload):
-    url='http://' + hostname + '/api/v1/ops'
-    print url
-    headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
-    rsp=requests.post(url, headers=headers, data=payload)
-    return rsp
-
-def get_status(hostname, status_id):
-    url='http://' + hostname + '/api/v1/status/?id=' + str(status_id)
-    rsp=requests.get(url)
-    return rsp
-
-def response_output(out_format, rsp):
-    print "response status code"
-    print rsp.status_code
-    pprint.pprint(rsp.json())
-
-def gen_ssh_key(hostname):
+def gen_ssh_key(out_format, hostname):
     payload = '{'
     payload += '"ops":"gen_ssh_key"'
     payload += '}'
-    return http_request(hostname, payload)
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def get_status_until_key_generated(hostname):
+def get_status_until_key_generated(out_format, hostname):
     ssh_status_id = 2
     while True :
-        rsp = get_status(hostname, ssh_status_id)
-        print rsp
-        print rsp.json()
+        rsp = rst.http_get_status(hostname, ssh_status_id)
         if int(rsp.status_code) == 200 :
             obj = rsp.json()
             if (obj['status'] | 0x01) == 0x01:
-                print obj['status']
-                return rsp
+                rst.response_output(out_format, rsp)
+                return 
         time.sleep(2)
 
-def start_ssh(hostname):
+def start_ssh(out_format, hostname):
     payload = '{'
     payload += '"ops":"start_ssh"'
     payload += '}'
-    return http_request(hostname, payload)
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def stop_ssh(hostname):
+def stop_ssh(out_format, hostname):
     payload = '{'
     payload += '"ops":"stop_ssh"'
     payload += '}'
-    return http_request(hostname, payload)
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
 def request_list(hostname, out_format, action):
     if action == 'start':
-        response_output(out_format, gen_ssh_key(hostname))
-        response_output(out_format, get_status_until_key_generated(hostname))
-        response_output(out_format, start_ssh(hostname))
+        gen_ssh_key(out_format, hostname)
+        get_status_until_key_generated(out_format, hostname)
+        start_ssh(out_format, hostname)
     if action == 'stop':
-        response_output(out_format, stop_ssh(hostname))
+        stop_ssh(out_format, hostname)
 
 def help_usage():
     print "rest_cli.py <hostname> <action>"

@@ -53,6 +53,11 @@ def request_list(hostname, out_format):
     response_output(out_format, http_request(hostname, 'sysinit_1'))
     response_output(out_format, http_request(hostname, 'sysinit_2'))
     response_output(out_format, http_request(hostname, 'sysinit_3'))
+    response_output(out_format, http_request(hostname, 'samba_count'))
+    response_output(out_format, http_request(hostname, 'samba_1'))
+    response_output(out_format, http_request(hostname, 'samba_2'))
+    response_output(out_format, http_request(hostname, 'samba_3'))
+
 
 def help_usage():
     print "rest_cli.py <hostname>"

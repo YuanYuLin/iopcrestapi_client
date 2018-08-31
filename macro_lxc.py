@@ -1,29 +1,8 @@
 #!/usr/bin/python2.7
 
-import requests
-import pprint
 import sys
-import json
 import time
-
-def http_request(hostname, payload):
-    url='http://' + hostname + '/api/v1/ops'
-    print url
-    headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
-    rsp=requests.post(url, headers=headers, data=payload)
-    return rsp
-
-def http_request_by_key(hostname, key, payload):
-    url='http://' + hostname + '/api/v1/dao/?key=' + key
-    print url
-    headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
-    rsp=requests.post(url, headers=headers, data=payload)
-    return rsp
-
-def response_output(out_format, rsp):
-    print "response status code"
-    print rsp.status_code
-    pprint.pprint(rsp.json())
+import libiopc_rest as rst
 
 def post_lxc_cfg(hostname, idx, enable):
     key = 'lxc_%d' % idx
@@ -38,30 +17,30 @@ def post_lxc_cfg(hostname, idx, enable):
     json += '"ipaddress":"192.168.155.%d", ' % idx
     json += '"gateway":"192.168.155.254"'
     json += '}'
-    return http_request_by_key(hostname, key, json)
+    rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
 def gen_lxc_cfg(hostname, idx):
     payload = '{'
     payload += '"ops":"gen_lxc_cfg",'
     payload += '"index":%d' % idx
     payload += '}'
-    return http_request(hostname, payload)
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def start_lxc(hostname, idx):
+def start_lxc(out_format, hostname, idx):
     payload = '{'
     payload += '"ops":"start_lxc",'
     payload += '"index":%d' % idx
     payload += '}'
-    return http_request(hostname, payload)
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
 def request_list(hostname, out_format, action):
     idx = 1
     enable = 1
     if action == "start":
-        response_output(out_format, post_lxc_cfg(hostname, idx, enable))
-        response_output(out_format, gen_lxc_cfg(hostname, idx))
+        post_lxc_cfg(hostname, idx, enable)
+        gen_lxc_cfg(hostname, idx)
         time.sleep(1)
-        response_output(out_format, start_lxc(hostname, idx))
+        start_lxc(hostname, idx)
 
     if action == "stop":
         print "Not Supported, Now..."
