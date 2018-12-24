@@ -4,6 +4,15 @@ import sys
 import time
 import libiopc_rest as rst
 
+def add_qemu_img(out_format, hostname, idx, enable):
+    js = '{'
+    js += '"format":"qcow2",'
+    js += '"disk_path":"/hdd/sdb/SystemDebian9Stock.qcow2",'
+    js += '"size_unit":"G",'
+    js += '"size":30,'
+    js += '}'
+    rst.respse_output(out_format, rst.http_post_dao_by_key(hostname, key, js))
+
 def post_qemu_cfg_debian_j3455m(out_format, hostname, idx, enable):
     key="qemu_%d" % idx
     js = '{'
@@ -85,12 +94,14 @@ def request_list(hostname, out_format, acti):
         start_qemu(out_format, hostname, idx)
     if acti == "stop" :
         stop_qemu(out_format, hostname, idx)
+    if acti == "add_qemu_img" :
+        add_qemu_img(out_format, hostname, idx)
     if acti == "query-versi" :
         query_versi(out_format, hostname, idx - 1)
 
 def help_usage():
     rst.out("rest_cli.py <hostname> <acti>")
-    rst.out("  acti: start_<index>, stop_<index>, query-versi")
+    rst.out("  acti: start_<index>, stop_<index>, add_qemu_img, query-versi")
     sys.exit(1)
 
 if __name__ == '__main__':
