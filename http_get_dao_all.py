@@ -10,54 +10,36 @@ def http_request(hostname, key):
     print url
     #http://192.168.1.115/api/v1/raw/2/1
     rsp=requests.get(url)
-    return rsp
+    return rsp.status_code, rsp.json()
 
-def response_output(out_format, rsp):
-    print rsp.status_code
-    pprint.pprint(rsp.json())
+def http_response(rsp):
+    status_code = rsp.status_code
+    json = rsp.json()
+    return status_code, json
+
+action_list=[
+{"NAME":"netifc_count"},
+{"NAME":"storage_count"},
+{"NAME":"lxc_count"},
+{"NAME":"qemu_count"},
+{"NAME":"rfb_count"},
+{"NAME":"samba_count"},
+{"NAME":"sysinit_count"},
+{"NAME":"misc_count"},
+]
 
 def request_list(hostname, out_format):
-    response_output(out_format, http_request(hostname, 'config_version'))
-    response_output(out_format, http_request(hostname, 'netifc_count'))
-    response_output(out_format, http_request(hostname, 'netifc_1'))
-    response_output(out_format, http_request(hostname, 'netifc_2'))
-    response_output(out_format, http_request(hostname, 'netifc_3'))
-    response_output(out_format, http_request(hostname, 'netifc_4'))
-    response_output(out_format, http_request(hostname, 'storage_count'))
-    response_output(out_format, http_request(hostname, 'storage_1'))
-    response_output(out_format, http_request(hostname, 'storage_2'))
-    response_output(out_format, http_request(hostname, 'lxc_count'))
-    response_output(out_format, http_request(hostname, 'lxc_1'))
-    response_output(out_format, http_request(hostname, 'lxc_2'))
-    response_output(out_format, http_request(hostname, 'lxc_3'))
-    response_output(out_format, http_request(hostname, 'lxc_4'))
-    response_output(out_format, http_request(hostname, 'lxc_5'))
-    response_output(out_format, http_request(hostname, 'lxc_6'))
-    response_output(out_format, http_request(hostname, 'hostname_cfg'))
-    response_output(out_format, http_request(hostname, 'drbd_cfg'))
-    response_output(out_format, http_request(hostname, 'qemu_count'))
-    response_output(out_format, http_request(hostname, 'qemu_1'))
-    response_output(out_format, http_request(hostname, 'qemu_2'))
-    response_output(out_format, http_request(hostname, 'qemu_3'))
-    response_output(out_format, http_request(hostname, 'qemu_4'))
-    response_output(out_format, http_request(hostname, 'qemu_5'))
-    response_output(out_format, http_request(hostname, 'qemu_6'))
-    response_output(out_format, http_request(hostname, 'rfb_count'))
-    response_output(out_format, http_request(hostname, 'rfb_1'))
-    response_output(out_format, http_request(hostname, 'rfb_2'))
-    response_output(out_format, http_request(hostname, 'rfb_3'))
-    response_output(out_format, http_request(hostname, 'rfb_4'))
-    response_output(out_format, http_request(hostname, 'rfb_5'))
-    response_output(out_format, http_request(hostname, 'rfb_6'))
-    response_output(out_format, http_request(hostname, 'sysinit_count'))
-    response_output(out_format, http_request(hostname, 'sysinit_1'))
-    response_output(out_format, http_request(hostname, 'sysinit_2'))
-    response_output(out_format, http_request(hostname, 'sysinit_3'))
-    response_output(out_format, http_request(hostname, 'samba_count'))
-    response_output(out_format, http_request(hostname, 'samba_1'))
-    response_output(out_format, http_request(hostname, 'samba_2'))
-    response_output(out_format, http_request(hostname, 'samba_3'))
-
+    for action in action_list:
+        status_code, json_objs = http_request(hostname, action["NAME"])
+        if status_code == 200 :
+            for obj in json_objs:
+               status_code, json_objs = http_request(hostname, obj)
+               if status_code == 200:
+                   pprint.pprint(json_objs)
+               else:
+                   print "sub request error: %s" % obj
+        else:
+            print "request error: %s" % action["NAME"]
 
 def help_usage():
     print "rest_cli.py <hostname>"

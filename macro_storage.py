@@ -4,35 +4,109 @@ import sys
 import time
 import libiopc_rest as rst
 
-def format_storage_btrfs_raid10(out_format, hostname):
+def format_storage_btrfs_raid1(out_format, hostname):
     payload = '{'
     payload += '"ops":"format_storage",'
-    payload += '"type":"btrfs_raid10",'
-    payload += '"label":"raid10_000",'
-    payload += '"devices":["/dev/vda", "/dev/vdb", "/dev/vdc", "/dev/vdd"]'
+    payload += '"type":"btrfs_raid1",'
+    payload += '"label":"raid1_000",'
+    payload += '"devices":["/dev/vda", "/dev/vdb"]'
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def mount_storage_btrfs_raid10(out_format, hostname):
+def attach_storage_btrfs_raid1(out_format, hostname):
+    payload = '{'
+    payload += '"ops":"format_storage",'
+    payload += '"type":"btrfs_raid1_attach_hdd",'
+    payload += '"label":"raid1_000",'
+    payload += '"mount_dir":"/hdd/data",'
+    payload += '"devices":["/dev/vdc"]'
+    payload += '}'
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+
+def detach_storage_btrfs_raid1(out_format, hostname):
+    payload = '{'
+    payload += '"ops":"format_storage",'
+    payload += '"type":"btrfs_raid1_detach_hdd",'
+    payload += '"label":"raid1_000",'
+    payload += '"mount_dir":"/hdd/data",'
+    payload += '"devices":["/dev/vdc"]'
+    payload += '}'
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+
+def balance_storage_btrfs_raid1(out_format, hostname):
+    payload = '{'
+    payload += '"ops":"format_storage",'
+    payload += '"type":"btrfs_raid1_balance_hdd",'
+    payload += '"label":"raid1_000",'
+    payload += '"mount_dir":"/hdd/data",'
+    #payload += '"devices":[]'
+    payload += '}'
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+
+def mount_storage_btrfs_raid1(out_format, hostname):
     payload = '{'
     payload += '"ops":"mount_storage_ex",'
     payload += '"enable":1,'
-    payload += '"type":"btrfs_raid10",'
+    payload += '"type":"btrfs_raid1",'
+    payload += '"label":"raid1_000",'
     payload += '"src":"/dev/vda",'
-    payload += '"dst":"/hdd/vda",'
-    payload += '"devices":["/dev/vda", "/dev/vdb", "/dev/vdc", "/dev/vdd"]'
+    payload += '"dst":"/hdd/data",'
+    payload += '"devices":[]'
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
+def create_subvolume(out_format, hostname):
+    payload = '{'
+    payload += '"ops":"format_storage",'
+    payload += '"type":"btrfs_subvolume_create",'
+    payload += '"label":"raid1_000",'
+    payload += '"mount_dir":"/hdd/data",'
+    payload += '"subvolume":"test",'
+    payload += '}'
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+
+def delete_subvolume(out_format, hostname):
+    payload = '{'
+    payload += '"ops":"format_storage",'
+    payload += '"type":"btrfs_subvolume_delete",'
+    payload += '"label":"raid1_000",'
+    payload += '"mount_dir":"/hdd/data",'
+    payload += '"subvolume":"test",'
+    payload += '}'
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+
+def snapshot_subvolume(out_format, hostname):
+    payload = '{'
+    payload += '"ops":"format_storage",'
+    payload += '"type":"btrfs_subvolume_snapshot",'
+    payload += '"label":"raid1_000",'
+    payload += '"mount_dir":"/hdd/data",'
+    payload += '"subvolume":"test",'
+    payload += '}'
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+
+action_list=[
+{"NAME":"format_btrfs_raid1",   "FUNCTION":format_storage_btrfs_raid1},
+{"NAME":"mount_btrfs_raid1",    "FUNCTION":mount_storage_btrfs_raid1},
+{"NAME":"attach_btrfs_raid1",   "FUNCTION":attach_storage_btrfs_raid1},
+{"NAME":"detach_btrfs_raid1",   "FUNCTION":detach_storage_btrfs_raid1},
+{"NAME":"balance_storage_btrfs_raid1", "FUNCTION":balance_storage_btrfs_raid1},
+{"NAME":"create_subvolume",     "FUNCTION":create_subvolume},
+{"NAME":"delete_subvolume",     "FUNCTION":delete_subvolume},
+{"NAME":"snapshot_subvolume",   "FUNCTION":snapshot_subvolume},
+]
+
 def request_list(hostname, out_format, action):
-    if action == "format_btrfs_raid10" :
-        format_storage_btrfs_raid10(out_format, hostname)
-    if action == "mount_btrfs_raid10" :
-        mount_storage_btrfs_raid10(out_format, hostname)
+    for act in action_list:
+        if action == act["NAME"] and act["FUNCTION"]:
+            act["FUNCTION"](out_format, hostname)
 
 def help_usage():
     rst.out("rest_cli.py <hostname> <action>")
-    rst.out("  action: format_btrfs_raid10, mount_btrfs_raid10")
+    rst.out("action:")
+    for act in action_list:
+        rst.out("    %s," % act["NAME"])
+    #rst.out("  action: format_btrfs_raid1, mount_btrfs_raid1, attach_btrfs_raid1")
     sys.exit(1)
 
 if __name__ == '__main__':
