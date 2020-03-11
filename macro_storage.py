@@ -4,12 +4,20 @@ import sys
 import time
 import libiopc_rest as rst
 
+#g_storage_list = '["/dev/vda", "/dev/vdb"]'
+g_storage_list = '["/dev/sda", "/dev/sdb"]'
+g_storage_list_attach = '["/dev/vdc"]'
+#g_storage_mount = '"/dev/vda"'
+g_storage_mount = '"/dev/sda"'
+g_storage_mount_dir = '"/hdd/data"'
+g_storage_subvol_name = '"test"'
+
 def format_storage_btrfs_raid1(out_format, hostname):
     payload = '{'
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_raid1",'
     payload += '"label":"raid1_000",'
-    payload += '"devices":["/dev/vda", "/dev/vdb"]'
+    payload += '"devices":%s' % g_storage_list
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
@@ -18,8 +26,8 @@ def attach_storage_btrfs_raid1(out_format, hostname):
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_raid1_attach_hdd",'
     payload += '"label":"raid1_000",'
-    payload += '"mount_dir":"/hdd/data",'
-    payload += '"devices":["/dev/vdc"]'
+    payload += '"mount_dir":%s,' % g_storage_mount_dir
+    payload += '"devices":%s' % g_storage_list_attach
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
@@ -28,8 +36,8 @@ def detach_storage_btrfs_raid1(out_format, hostname):
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_raid1_detach_hdd",'
     payload += '"label":"raid1_000",'
-    payload += '"mount_dir":"/hdd/data",'
-    payload += '"devices":["/dev/vdc"]'
+    payload += '"mount_dir":%s,' % g_storage_mount_dir
+    payload += '"devices":%s' % g_storage_list_attach
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
@@ -38,7 +46,7 @@ def balance_storage_btrfs_raid1(out_format, hostname):
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_raid1_balance_hdd",'
     payload += '"label":"raid1_000",'
-    payload += '"mount_dir":"/hdd/data",'
+    payload += '"mount_dir":%s,' % g_storage_mount_dir
     #payload += '"devices":[]'
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
@@ -49,8 +57,8 @@ def mount_storage_btrfs_raid1(out_format, hostname):
     payload += '"enable":1,'
     payload += '"type":"btrfs_raid1",'
     payload += '"label":"raid1_000",'
-    payload += '"src":"/dev/vda",'
-    payload += '"dst":"/hdd/data",'
+    payload += '"src":%s,' % g_storage_mount
+    payload += '"dst":%s,' % g_storage_mount_dir
     payload += '"devices":[]'
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
@@ -60,8 +68,8 @@ def create_subvolume(out_format, hostname):
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_subvolume_create",'
     payload += '"label":"raid1_000",'
-    payload += '"mount_dir":"/hdd/data",'
-    payload += '"subvolume":"test",'
+    payload += '"mount_dir":%s,' % g_storage_mount_dir
+    payload += '"subvolume":%s,' % g_storage_subvol_name
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
@@ -70,8 +78,8 @@ def delete_subvolume(out_format, hostname):
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_subvolume_delete",'
     payload += '"label":"raid1_000",'
-    payload += '"mount_dir":"/hdd/data",'
-    payload += '"subvolume":"test",'
+    payload += '"mount_dir":%s,' % g_storage_mount_dir
+    payload += '"subvolume":%s,' % g_storage_subvol_name
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
@@ -80,8 +88,8 @@ def snapshot_subvolume(out_format, hostname):
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_subvolume_snapshot",'
     payload += '"label":"raid1_000",'
-    payload += '"mount_dir":"/hdd/data",'
-    payload += '"subvolume":"test",'
+    payload += '"mount_dir":%s,' % g_storage_mount_dir
+    payload += '"subvolume":%s,' % g_storage_subvol_name
     payload += '}'
     rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 

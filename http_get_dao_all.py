@@ -12,24 +12,22 @@ def http_request(hostname, key):
     rsp=requests.get(url)
     return rsp.status_code, rsp.json()
 
-def http_response(rsp):
-    status_code = rsp.status_code
-    json = rsp.json()
-    return status_code, json
-
 action_list=[
-{"NAME":"netifc_count"},
-{"NAME":"storage_count"},
-{"NAME":"lxc_count"},
-{"NAME":"qemu_count"},
-{"NAME":"rfb_count"},
-{"NAME":"samba_count"},
-{"NAME":"sysinit_count"},
-{"NAME":"misc_count"},
+{"EN": 1, "NAME":"netifc_count"},
+{"EN": 1, "NAME":"storage_count"},
+{"EN": 0, "NAME":"lxc_count"},
+{"EN": 0, "NAME":"qemu_count"},
+{"EN": 0, "NAME":"rfb_count"},
+{"EN": 0, "NAME":"samba_count"},
+{"EN": 1, "NAME":"sysinit_count"},
+{"EN": 0, "NAME":"misc_count"},
 ]
 
 def request_list(hostname, out_format):
     for action in action_list:
+        if action["EN"] != 1 :
+            continue
+
         status_code, json_objs = http_request(hostname, action["NAME"])
         if status_code == 200 :
             for obj in json_objs:

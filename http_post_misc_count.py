@@ -5,19 +5,27 @@ import pprint
 import sys
 import json
 
-def http_request(hostname, key):
+def http_request(hostname, key, payload):
     url='http://' + hostname + '/api/v1/dao/?key=' + key
     print url
-    #http://192.168.1.115/api/v1/raw/2/1
-    rsp=requests.get(url)
+    headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
+    rsp=requests.post(url, headers=headers, data=payload)
     return rsp
 
 def response_output(out_format, rsp):
     print rsp.status_code
+    print rsp.text
     pprint.pprint(rsp.json())
 
 def request_list(hostname, out_format):
-    response_output(out_format, http_request(hostname, 'config_version'))
+    key = 'misc_count'
+    json = '['
+    json += '"hostname_cfg",'
+    json += '"config_version",'
+    json += '"dri_cfg"'
+    json += ']'
+    
+    response_output(out_format, http_request(hostname, key, json))
 
 def help_usage():
     print "rest_cli.py <hostname>"
