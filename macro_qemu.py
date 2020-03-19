@@ -4,14 +4,17 @@ import sys
 import time
 import libiopc_rest as rst
 
-def add_qemu_img(out_format, hostname, idx, enable):
-    js = '{'
-    js += '"format":"qcow2",'
-    js += '"disk_path":"/hdd/sdb/SystemDebian9Stock.qcow2",'
-    js += '"size_unit":"G",'
-    js += '"size":30,'
-    js += '}'
-    rst.respse_output(out_format, rst.http_post_dao_by_key(hostname, key, js))
+def add_qemu_img(out_format, hostname):
+    payload = '{'
+    payload += '"ops":"add_qemu_img",'
+    payload += '"format":"qcow2",'
+    #payload += '"disk_path":"/hdd/data/00_Daily/SystemDebian10.qcow2",'
+    payload += '"disk_path":"/hdd/data/00_Daily/Data001.qcow2",'
+    payload += '"size_unit":"G",'
+    #payload += '"size":30,'
+    payload += '"size":200,'
+    payload += '}'
+    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
 def post_qemu_cfg_debian_j3455m(out_format, hostname, idx, enable):
     key="qemu_%d" % idx
@@ -52,7 +55,7 @@ def post_qemu_cfg_debian_stock(out_format, hostname, idx, enable):
 def start_qemu(out_format, hostname, idx):
     payload = '{'
     payload += '"ops":"start_qemu",'
-    payload += '"index":%d' % idx
+    payload += '"qemu_index":%d' % idx
     payload += '}'
     rst.respse_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
@@ -95,7 +98,7 @@ def request_list(hostname, out_format, acti):
     if acti == "stop" :
         stop_qemu(out_format, hostname, idx)
     if acti == "add_qemu_img" :
-        add_qemu_img(out_format, hostname, idx)
+        add_qemu_img(out_format, hostname)
     if acti == "query-versi" :
         query_versi(out_format, hostname, idx - 1)
 

@@ -14,9 +14,9 @@ def http_request(hostname, key):
 
 action_list=[
 {"EN": 1, "NAME":"netifc_count"},
-{"EN": 1, "NAME":"storage_count"},
+{"EN": 0, "NAME":"storage_count"},
 {"EN": 0, "NAME":"lxc_count"},
-{"EN": 0, "NAME":"qemu_count"},
+{"EN": 1, "NAME":"qemu_count"},
 {"EN": 0, "NAME":"rfb_count"},
 {"EN": 0, "NAME":"samba_count"},
 {"EN": 1, "NAME":"sysinit_count"},

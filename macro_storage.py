@@ -10,7 +10,12 @@ g_storage_list_attach = '["/dev/vdc"]'
 #g_storage_mount = '"/dev/vda"'
 g_storage_mount = '"/dev/sda"'
 g_storage_mount_dir = '"/hdd/data"'
-g_storage_subvol_name = '"test"'
+#g_storage_subvol_name = '"00_Daily"'
+#g_storage_subvol_name = '"01_Weekly"'
+#g_storage_subvol_name = '"02_Monthly"'
+g_storage_subvol_name = '"99_Misc"'
+#g_storage_subvol_name = '"VMs"'
+#g_storage_subvol_name = '"Misc"'
 
 def format_storage_btrfs_raid1(out_format, hostname):
     payload = '{'
