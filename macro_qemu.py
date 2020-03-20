@@ -2,6 +2,7 @@
 
 import sys
 import time
+import pprint
 import libiopc_rest as rst
 
 def add_qemu_img(out_format, hostname):
@@ -52,8 +53,8 @@ def post_qemu_cfg_debian_stock(out_format, hostname, idx, enable):
     js += '}'
     rst.respse_output(out_format, rst.http_post_dao_by_key(hostname, key, js))
 
-def start_qemu(out_format, hostname):
-    idx = 1
+def start_qemu(hostname, out_format):
+    idx = 0
     payload = '{'
     payload += '"ops":"start_qemu",'
     payload += '"qemu_index":%d' % idx
@@ -98,6 +99,7 @@ def request_list(hostname, out_format):
             else:
                 print "sub request error: %s" % obj
         else:
+            print ""
 
 def help_usage():
     rst.out("rest_cli.py <hostname> <action>")

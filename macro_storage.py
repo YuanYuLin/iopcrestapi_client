@@ -2,13 +2,14 @@
 
 import sys
 import time
+import pprint
 import libiopc_rest as rst
 
-#g_storage_list = '["/dev/vda", "/dev/vdb"]'
-g_storage_list = '["/dev/sda", "/dev/sdb"]'
+g_storage_list = '["/dev/vda", "/dev/vdb"]'
+#g_storage_list = '["/dev/sda", "/dev/sdb"]'
 g_storage_list_attach = '["/dev/vdc"]'
-#g_storage_mount = '"/dev/vda"'
-g_storage_mount = '"/dev/sda"'
+g_storage_mount = '"/dev/vda"'
+#g_storage_mount = '"/dev/sda"'
 g_storage_mount_dir = '"/hdd/data"'
 #g_storage_subvol_name = '"00_Daily"'
 #g_storage_subvol_name = '"01_Weekly"'
@@ -17,16 +18,16 @@ g_storage_subvol_name = '"99_Misc"'
 #g_storage_subvol_name = '"VMs"'
 #g_storage_subvol_name = '"Misc"'
 
-def format_storage_btrfs_raid1(out_format, hostname):
+def format_storage_btrfs_raid1(hostname, out_format):
     payload = '{'
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_raid1",'
     payload += '"label":"raid1_000",'
     payload += '"devices":%s' % g_storage_list
     payload += '}'
-    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+    return rst.http_post_ops_by_pyaload(hostname, payload)
 
-def attach_storage_btrfs_raid1(out_format, hostname):
+def attach_storage_btrfs_raid1(hostname, out_format):
     payload = '{'
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_raid1_attach_hdd",'
@@ -34,9 +35,10 @@ def attach_storage_btrfs_raid1(out_format, hostname):
     payload += '"mount_dir":%s,' % g_storage_mount_dir
     payload += '"devices":%s' % g_storage_list_attach
     payload += '}'
-    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+    #rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def detach_storage_btrfs_raid1(out_format, hostname):
+def detach_storage_btrfs_raid1(hostname, out_format):
     payload = '{'
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_raid1_detach_hdd",'
@@ -44,9 +46,10 @@ def detach_storage_btrfs_raid1(out_format, hostname):
     payload += '"mount_dir":%s,' % g_storage_mount_dir
     payload += '"devices":%s' % g_storage_list_attach
     payload += '}'
-    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+    #rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def balance_storage_btrfs_raid1(out_format, hostname):
+def balance_storage_btrfs_raid1(hostname, out_format):
     payload = '{'
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_raid1_balance_hdd",'
@@ -54,9 +57,10 @@ def balance_storage_btrfs_raid1(out_format, hostname):
     payload += '"mount_dir":%s,' % g_storage_mount_dir
     #payload += '"devices":[]'
     payload += '}'
-    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+    #rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def mount_storage_btrfs_raid1(out_format, hostname):
+def mount_storage_btrfs_raid1(hostname, out_format):
     payload = '{'
     payload += '"ops":"mount_storage_ex",'
     payload += '"enable":1,'
@@ -66,9 +70,10 @@ def mount_storage_btrfs_raid1(out_format, hostname):
     payload += '"dst":%s,' % g_storage_mount_dir
     payload += '"devices":[]'
     payload += '}'
-    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+    #rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def create_subvolume(out_format, hostname):
+def create_subvolume(hostname, out_format):
     payload = '{'
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_subvolume_create",'
@@ -76,9 +81,10 @@ def create_subvolume(out_format, hostname):
     payload += '"mount_dir":%s,' % g_storage_mount_dir
     payload += '"subvolume":%s,' % g_storage_subvol_name
     payload += '}'
-    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+    #rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def delete_subvolume(out_format, hostname):
+def delete_subvolume(hostname, out_format):
     payload = '{'
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_subvolume_delete",'
@@ -86,9 +92,10 @@ def delete_subvolume(out_format, hostname):
     payload += '"mount_dir":%s,' % g_storage_mount_dir
     payload += '"subvolume":%s,' % g_storage_subvol_name
     payload += '}'
-    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+    #rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
-def snapshot_subvolume(out_format, hostname):
+def snapshot_subvolume(hostname, out_format):
     payload = '{'
     payload += '"ops":"format_storage",'
     payload += '"type":"btrfs_subvolume_snapshot",'
@@ -96,7 +103,8 @@ def snapshot_subvolume(out_format, hostname):
     payload += '"mount_dir":%s,' % g_storage_mount_dir
     payload += '"subvolume":%s,' % g_storage_subvol_name
     payload += '}'
-    rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+    #rst.response_output(out_format, rst.http_post_ops_by_pyaload(hostname, payload))
 
 action_list=[
 {"NAME":"format_btrfs_raid1",   "FUNCTION":format_storage_btrfs_raid1},
@@ -112,7 +120,13 @@ action_list=[
 def request_list(hostname, out_format, action):
     for act in action_list:
         if action == act["NAME"] and act["FUNCTION"]:
-            act["FUNCTION"](out_format, hostname)
+            status_code, json_objs = act["FUNCTION"](hostname, out_format)
+            if status_code == 200:
+                pprint.pprint(json_objs)
+            else:
+                print "sub request error: %s" % obj
+        else:
+            print ""
 
 def help_usage():
     rst.out("rest_cli.py <hostname> <action>")

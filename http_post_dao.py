@@ -11,7 +11,7 @@ def set_qemu_cfg(hostname, out_format):
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
     json += '"rootfs":["/hdd/data/00_Daily/SystemDebian10.qcow2", "/hdd/data/00_Daily/Data001.qcow2"], '
-    json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br2"}, {"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx, (idx + 0x80))
+    json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br2"}, {"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx, (idx + 80))
     #json += '"nethwaddr":"00:20:18:08:19:%02d", ' % idx
     #json += '"gwifc":"br2",' 
     json += '"memory":10000, '
@@ -87,39 +87,39 @@ def set_storage_2(hostname, out_format):
     #rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
 action_list=[
-{"EN": 1, "NAME":"set_qemu_cfg",	"FUNCTION":set_qemu_cfg},
-{"EN": 0, "NAME":"set_netifc_count",	"FUNCTION":set_netifc_count},
-{"EN": 0, "NAME":"set_netifc_5",	"FUNCTION":set_netifc_5},
-{"EN": 0, "NAME":"set_netifc_6",	"FUNCTION":set_netifc_6},
-{"EN": 0, "NAME":"set_storage_2",	"FUNCTION":set_storage_2}
+{"NAME":"set_qemu_cfg",	        "FUNCTION":set_qemu_cfg},
+{"NAME":"set_netifc_count",	"FUNCTION":set_netifc_count},
+{"NAME":"set_netifc_5",	        "FUNCTION":set_netifc_5},
+{"NAME":"set_netifc_6",	        "FUNCTION":set_netifc_6},
+{"NAME":"set_storage_2",	"FUNCTION":set_storage_2}
 ]
 
-def request_list(hostname, out_format):
-    for action in action_list:
-        if action["EN"] != 1 :
-            continue
-
-        if action["NAME"] and action["FUNCTION"]:
-            status_code, json_objs = action["FUNCTION"](hostname, out_format)
+def request_list(hostname, out_format, action):
+    for act in action_list:
+        if action == act["NAME"] and act["FUNCTION"]:
+            status_code, json_objs = act["FUNCTION"](hostname, out_format)
             if status_code == 200:
                 pprint.pprint(json_objs)
             else:
                 print "sub request error: %s" % obj
         else:
+            print ""
 
 def help_usage():
     rst.out("rest_cli.py <hostname> <action>")
     rst.out("action:")
     for act in action_list:
         rst.out("    %s," % act["NAME"])
+
     sys.exit(1)
 
 if __name__ == '__main__':
-    print sys.argv
-    if len(sys.argv) < 2:
+
+    if len(sys.argv) < 3:
         help_usage()
 
     hostname=sys.argv[1]
+    action=sys.argv[2]
 
-    request_list(hostname, 'json')
+    request_list(hostname, 'json', action)
 
