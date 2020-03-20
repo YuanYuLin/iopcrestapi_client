@@ -1,22 +1,9 @@
 #!/usr/bin/python2.7
 
-import requests
 import pprint
 import sys
 import json
-
-def http_request(hostname, key, payload):
-    url='http://' + hostname + '/api/v1/dao/?key=' + key
-    print url
-    headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
-    rsp=requests.post(url, headers=headers, data=payload)
-    return rsp
-
-def response_output(out_format, rsp):
-    print rsp.status_code
-    print rsp.text
-    pprint.pprint(rsp.json())
-
+import libiopc_rest as rst
 def set_qemu_cfg(hostname, out_format):
     idx = 1
     key="qemu_%d" % idx
@@ -24,14 +11,15 @@ def set_qemu_cfg(hostname, out_format):
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
     json += '"rootfs":["/hdd/data/00_Daily/SystemDebian10.qcow2", "/hdd/data/00_Daily/Data001.qcow2"], '
-    json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br2"}, {"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % idx, (idx + 0x80)
+    json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br2"}, {"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx, (idx + 0x80))
     #json += '"nethwaddr":"00:20:18:08:19:%02d", ' % idx
     #json += '"gwifc":"br2",' 
     json += '"memory":10000, '
     json += '"smp":4,'
     json += '}'
 
-    response_output(out_format, http_request(hostname, key, json))
+    return rst.http_post_dao_by_key(hostname, key, json)
+    #rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
 def set_netifc_count(hostname, out_format):
     key = 'netifc_count'
@@ -41,10 +29,11 @@ def set_netifc_count(hostname, out_format):
     json += '"netifc_3",'
     json += '"netifc_4",'
     json += '"netifc_5",'
-    json += '"netifc_6"'
+    json += '"netifc_6",'
     json += ']'
 
-    response_output(out_format, http_request(hostname, key, json))
+    return rst.http_post_dao_by_key(hostname, key, json)
+    #rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
 def set_netifc_5(hostname, out_format):
     key = 'netifc_5'
@@ -59,7 +48,8 @@ def set_netifc_5(hostname, out_format):
     json += '"vlan": 0'
     json += '}'
 
-    response_output(out_format, http_request(hostname, key, json))
+    return rst.http_post_dao_by_key(hostname, key, json)
+    #rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
 def set_netifc_6(hostname, out_format):
     key = 'netifc_6'
@@ -78,7 +68,8 @@ def set_netifc_6(hostname, out_format):
     json += '"vlan": 0'
     json += '}'
 
-    response_output(out_format, http_request(hostname, key, json))
+    return rst.http_post_dao_by_key(hostname, key, json)
+    #rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
 def set_storage_2(hostname, out_format):
     key = 'storage_2'
@@ -92,10 +83,11 @@ def set_storage_2(hostname, out_format):
     json += '"visable":1'
     json += '}'
 
-    response_output(out_format, http_request(hostname, key, json))
+    return rst.http_post_dao_by_key(hostname, key, json)
+    #rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
 action_list=[
-{"EN": 0, "NAME":"set_qemu_cfg",	"FUNCTION":set_qemu_cfg},
+{"EN": 1, "NAME":"set_qemu_cfg",	"FUNCTION":set_qemu_cfg},
 {"EN": 0, "NAME":"set_netifc_count",	"FUNCTION":set_netifc_count},
 {"EN": 0, "NAME":"set_netifc_5",	"FUNCTION":set_netifc_5},
 {"EN": 0, "NAME":"set_netifc_6",	"FUNCTION":set_netifc_6},
@@ -103,14 +95,18 @@ action_list=[
 ]
 
 def request_list(hostname, out_format):
-    for act in action_list:
+    for action in action_list:
         if action["EN"] != 1 :
             continue
 
-        if action == act["NAME"] and act["FUNCTION"]:
-            act["FUNCTION"](out_format, hostname)
+        if action["NAME"] and action["FUNCTION"]:
+            status_code, json_objs = action["FUNCTION"](hostname, out_format)
+            if status_code == 200:
+                pprint.pprint(json_objs)
+            else:
+                print "sub request error: %s" % obj
+        else:
 
-def help_usage():
 def help_usage():
     rst.out("rest_cli.py <hostname> <action>")
     rst.out("action:")

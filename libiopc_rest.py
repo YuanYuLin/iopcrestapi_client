@@ -19,21 +19,21 @@ def http_get_dao_by_key(hostname, key):
     debug(url)
     #http://192.168.1.115/api/v1/raw/2/1
     rsp=requests.get(url)
-    return rsp
+    return rsp.status_code, rsp.json()
 
 def http_post_dao_by_key(hostname, key, payload):
     url='http://' + hostname + '/api/v1/dao/?key=' + key
     debug(url)
     headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
     rsp=requests.post(url, headers=headers, data=payload)
-    return rsp
+    return rsp.status_code, rsp.json()
 
 def http_post_ops_by_pyaload(hostname, payload):
     url='http://' + hostname + '/api/v1/ops'
     debug(url)
     headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
     rsp=requests.post(url, headers=headers, data=payload)
-    return rsp
+    return rsp.status_code, rsp.json()
 
 def http_post_rfb_by_payload(hostname, payload):
     url='http://' + hostname + '/api/v1/rfb'

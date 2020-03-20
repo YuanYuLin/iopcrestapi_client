@@ -4,6 +4,7 @@ import requests
 import pprint
 import sys
 import json
+import libiopc_rest as rst
 
 def http_request(hostname, key):
     url='http://' + hostname + '/api/v1/dao/?key=' + key
@@ -28,10 +29,10 @@ def request_list(hostname, out_format):
         if action["EN"] != 1 :
             continue
 
-        status_code, json_objs = http_request(hostname, action["NAME"])
+        status_code, json_objs = rst.http_get_dao_by_key(hostname, action["NAME"])
         if status_code == 200 :
             for obj in json_objs:
-               status_code, json_objs = http_request(hostname, obj)
+               status_code, json_objs = rst.http_get_dao_by_key(hostname, obj)
                if status_code == 200:
                    pprint.pprint(json_objs)
                else:
