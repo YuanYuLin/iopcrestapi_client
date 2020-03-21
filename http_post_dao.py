@@ -86,6 +86,38 @@ def set_storage_2(hostname, out_format):
     return rst.http_post_dao_by_key(hostname, key, json)
     #rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
+def post_samba_cfg(out_format, hostname):
+    enable = 1
+    idx = 1
+    key="samba_%d" % idx
+    json = '{'
+    json += '"enable":%d, ' % enable
+    json += '"type":"global", '
+    json += '"name":"samba%d", ' % idx
+    json += '"path":"", '
+    json += '}'
+    rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
+
+    idx = 2
+    key="samba_%d" % idx
+    json = '{'
+    json += '"enable":%d, ' % enable
+    json += '"type":"shrdir", '
+    json += '"name":"samba%d", ' % idx
+    json += '"path":"/tmp", '
+    json += '}'
+    rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
+
+    idx = 3
+    key="samba_%d" % idx
+    json = '{'
+    json += '"enable":%d, ' % enable
+    json += '"type":"shrdir", '
+    json += '"name":"samba%d", ' % idx
+    json += '"path":"/hdd", '
+    json += '}'
+    rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
+
 action_list=[
 {"NAME":"set_qemu_cfg",	        "FUNCTION":set_qemu_cfg},
 {"NAME":"set_netifc_count",	"FUNCTION":set_netifc_count},
