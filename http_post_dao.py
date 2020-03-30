@@ -4,22 +4,33 @@ import pprint
 import sys
 import json
 import libiopc_rest as rst
-def set_qemu_cfg(hostname, out_format):
+def set_qemu_cfg1(hostname, out_format):
     idx = 1
     key="qemu_%d" % idx
     json = '{'
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
-    json += '"rootfs":["/hdd/data/00_Daily/SystemDebian10.qcow2", "/hdd/data/00_Daily/Data001.qcow2"], '
+    json += '"rootfs":["/hdd/data/SystemDebian9.qcow2", "/hdd/data/DataBuildIOPC.qcow2", "/hdd/data/DataBuildIOPC2.qcow2"], '
     json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br2"}, {"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx, (idx + 80))
-    #json += '"nethwaddr":"00:20:18:08:19:%02d", ' % idx
-    #json += '"gwifc":"br2",' 
     json += '"memory":10000, '
     json += '"smp":4,'
     json += '}'
 
     return rst.http_post_dao_by_key(hostname, key, json)
-    #rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
+
+def set_qemu_cfg2(hostname, out_format):
+    idx = 2
+    key="qemu_%d" % idx
+    json = '{'
+    json += '"enable":1, '
+    json += '"name":"qemu%03d", ' % idx
+    json += '"rootfs":["/hdd/data/00_Daily/SystemDebian9.qcow2", "/hdd/data/00_Daily/Data002.qcow2"], '
+    json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br2"}, {"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx, (idx + 80))
+    json += '"memory":10000, '
+    json += '"smp":4,'
+    json += '}'
+
+    return rst.http_post_dao_by_key(hostname, key, json)
 
 def set_netifc_count(hostname, out_format):
     key = 'netifc_count'
@@ -119,7 +130,8 @@ def post_samba_cfg(out_format, hostname):
     rst.response_output(out_format, rst.http_post_dao_by_key(hostname, key, json))
 
 action_list=[
-{"NAME":"set_qemu_cfg",	        "FUNCTION":set_qemu_cfg},
+{"NAME":"set_qemu_cfg1",        "FUNCTION":set_qemu_cfg1},
+{"NAME":"set_qemu_cfg2",        "FUNCTION":set_qemu_cfg2},
 {"NAME":"set_netifc_count",	"FUNCTION":set_netifc_count},
 {"NAME":"set_netifc_5",	        "FUNCTION":set_netifc_5},
 {"NAME":"set_netifc_6",	        "FUNCTION":set_netifc_6},
