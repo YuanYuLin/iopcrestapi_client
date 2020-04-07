@@ -2,6 +2,7 @@
 
 import sys
 import time
+import pprint
 import libiopc_rest as rst
 
 def start_samba(hostname, out_format):
@@ -37,7 +38,7 @@ def help_usage():
     rst.out("action:")
     for act in action_list:
         rst.out("    %s," % act["NAME"])
-    #rst.out("  action: format_btrfs_raid1, mount_btrfs_raid1, attach_btrfs_raid1")
+
     sys.exit(1)
 
 if __name__ == '__main__':

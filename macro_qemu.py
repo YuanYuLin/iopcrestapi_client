@@ -48,17 +48,14 @@ def query_versi(out_format, hostname, idx):
     rst.respse_output(out_format, rst.http_post_rfb_by_payload(hostname, payload))
 
 action_list=[
-{"EN": 1, "NAME":"start_qemu",		"FUNCTION":start_qemu},
-{"EN": 0, "NAME":"add_img",		"FUNCTION":add_img},
+{"NAME":"start_qemu",		"FUNCTION":start_qemu},
+{"NAME":"add_img",		"FUNCTION":add_img},
 ]
 
-def request_list(hostname, out_format):
-    for action in action_list:
-        if action["EN"] != 1 :
-            continue
-
-        if action["NAME"] and action["FUNCTION"]:
-            status_code, json_objs = action["FUNCTION"](hostname, out_format)
+def request_list(hostname, out_format, action):
+    for act in action_list:
+        if action == act["NAME"] and act["FUNCTION"]:
+            status_code, json_objs = act["FUNCTION"](hostname, out_format)
             if status_code == 200:
                 pprint.pprint(json_objs)
             else:
@@ -71,6 +68,7 @@ def help_usage():
     rst.out("action:")
     for act in action_list:
         rst.out("    %s," % act["NAME"])
+
     sys.exit(1)
 
 if __name__ == '__main__':
@@ -79,7 +77,7 @@ if __name__ == '__main__':
         help_usage()
 
     hostname=sys.argv[1]
-    acti=sys.argv[2]
+    action=sys.argv[2]
 
-    request_list(hostname, 'js')
+    request_list(hostname, 'json', action)
 
