@@ -1,12 +1,18 @@
 import requests
 import json
 import pprint
+import imp
 
 def debug(msg):
     print(msg)
 	
 def out(msg):
     print(msg)
+
+def loadModule(module_name, module_file, module_path):
+    imp_fp, imp_pathname, imp_description = imp.find_module(module_file, module_path)
+    module = imp.load_module(module_name, imp_fp, imp_pathname, imp_description)
+    return module
 
 def response_output(out_format, rsp):
     debug("response status code")
@@ -23,9 +29,12 @@ def http_get_dao_by_key(hostname, key):
 
 def http_post_dao_by_key(hostname, key, payload):
     url='http://' + hostname + '/api/v1/dao/?key=' + key
+    debug("POST Begin")
     debug(url)
+    debug(payload)
     headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
     rsp=requests.post(url, headers=headers, data=payload)
+    debug("POST End")
     return rsp.status_code, rsp.json()
 
 def http_post_ops_by_pyaload(hostname, payload):

@@ -10,6 +10,8 @@ def set_qemu_cfg1(hostname, out_format):
     json = '{'
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
+    json += '"use_kvm":1,'
+    json += '"use_host_cpu:0",'
     json += '"rootfs":["/hdd/data/SystemDebian9.qcow2", "/hdd/data/DataBuildIOPC.qcow2", "/hdd/data/DataBuildIOPC2.qcow2"], '
     json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br2"}, {"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx, (idx + 80))
     json += '"memory":10000, '
@@ -24,6 +26,8 @@ def set_qemu_cfg2(hostname, out_format):
     json = '{'
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
+    json += '"use_kvm":1,'
+    json += '"use_host_cpu:0",'
     json += '"rootfs":["/hdd/data/00_Daily/SystemDebian9.qcow2", "/hdd/data/00_Daily/Data002.qcow2"], '
     json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br2"}, {"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx, (idx + 80))
     json += '"memory":10000, '
