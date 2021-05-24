@@ -39,4 +39,4 @@ if __name__ == '__main__':
     if status_code == 200:
         pprint.pprint(json_objs)
     else:
-        print "sub request error: %s" % obj
+        rst.out("sub request error: %s" % json_objs)

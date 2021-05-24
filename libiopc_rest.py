@@ -32,6 +32,11 @@ def http_post_dao_by_key(hostname, key, payload):
     debug("POST Begin")
     debug(url)
     debug(payload)
+    try :
+        json.loads(payload)
+    except ValueError as ex:
+        debug("Invalid JSON: %s" % ex)
+        return 500, '{"msg":"%s"}' % ex
     headers = {'content-type':'application/json; charset=utf-8', 'user-agent':'iopc-app'}
     rsp=requests.post(url, headers=headers, data=payload)
     debug("POST End")

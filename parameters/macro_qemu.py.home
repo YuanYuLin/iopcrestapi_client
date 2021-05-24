@@ -6,7 +6,7 @@ def func_add_img(hostname, options):
     payload = '{'
     payload += '"ops":"add_qemu_img",'
     payload += '"format":"qcow2",'
-    payload += '"disk_path":"/hdd/data/00_Daily/SystemDebian9.qcow2",'
+    payload += '"disk_path":"/hdd/data/99_Misc/VMs/sys005.qcow2",'
     payload += '"size":30,'
     #payload += '"disk_path":"/hdd/data/00_Daily/Data002.qcow2",'
     #payload += '"size":200,'
@@ -58,5 +58,13 @@ def func_gen_cfg4(hostname, options):
 
 def func_start_qemu4(hostname, options):
     payload = _start_qemu(3)
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+
+def func_gen_cfg5(hostname, options):
+    payload = _gencfg_qemu(4)
+    return rst.http_post_ops_by_pyaload(hostname, payload)
+
+def func_start_qemu5(hostname, options):
+    payload = _start_qemu(4)
     return rst.http_post_ops_by_pyaload(hostname, payload)
 

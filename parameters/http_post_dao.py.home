@@ -9,12 +9,12 @@ def func_set_qemu_cfg1(hostname, options):
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
     json += '"use_kvm":1,'
-    json += '"use_host_cpu:0",'
+    json += '"use_host_cpu":0,'
     json += '"rootfs":["/hdd/data/99_Misc/VMs/sys001.qcow2"], '
     json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx)
     json += '"memory":512, '
     json += '"smp":2,'
-    json += '"desc":"ssh server",'
+    json += '"desc":"ssh server"'
     json += '}'
 
     return rst.http_post_dao_by_key(hostname, key, json)
@@ -26,12 +26,12 @@ def func_set_qemu_cfg2(hostname, options):
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
     json += '"use_kvm":1,'
-    json += '"use_host_cpu:0",'
+    json += '"use_host_cpu":0,'
     json += '"rootfs":["/hdd/data/99_Misc/VMs/sys002.qcow2", "/hdd/data/99_Misc/VMs/data002_01.qcow2", "/hdd/data/99_Misc/VMs/data002_02.qcow2"], '
     json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx)
     json += '"memory":8192, '
     json += '"smp":4,'
-    json += '"desc":"build IOPC server",'
+    json += '"desc":"build IOPC server"'
     json += '}'
 
     return rst.http_post_dao_by_key(hostname, key, json)
@@ -43,12 +43,12 @@ def func_set_qemu_cfg3(hostname, options):
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
     json += '"use_kvm":1,'
-    json += '"use_host_cp:0",'
+    json += '"use_host_cpu":0,'
     json += '"rootfs":["/hdd/data/99_Misc/VMs/sys003.qcow2"], '
     json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx)
     json += '"memory":1024, '
     json += '"smp":2,'
-    json += '"desc":"vanish use",'
+    json += '"desc":"vanish use"'
     json += '}'
 
     return rst.http_post_dao_by_key(hostname, key, json)
@@ -60,12 +60,29 @@ def func_set_qemu_cfg4(hostname, options):
     json += '"enable":1, '
     json += '"name":"qemu%03d", ' % idx
     json += '"use_kvm":1,'
-    json += '"use_host_cpu:0",'
+    json += '"use_host_cpu":0,'
     json += '"rootfs":["/hdd/data/99_Misc/VMs/sys004.qcow2", "/tmp/ramdisk004.qcow2"], '
     json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx)
     json += '"memory":1024, '
     json += '"smp":2,'
-    json += '"desc":"P2P",'
+    json += '"desc":"P2P"'
+    json += '}'
+
+    return rst.http_post_dao_by_key(hostname, key, json)
+
+def func_set_qemu_cfg5(hostname, options):
+    idx = 5
+    key="qemu_%d" % idx
+    json = '{'
+    json += '"enable":1, '
+    json += '"name":"qemu%03d", ' % idx
+    json += '"use_kvm":1,'
+    json += '"use_host_cpu":0,'
+    json += '"rootfs":["/hdd/data/99_Misc/VMs/sys005.qcow2"], '
+    json += '"netifcs":[{"hwaddr":"00:20:18:08:19:%02d", "gwifc":"br0"}],' % (idx)
+    json += '"memory":1024, '
+    json += '"smp":2,'
+    json += '"desc":"TelegramBot"'
     json += '}'
 
     return rst.http_post_dao_by_key(hostname, key, json)
